@@ -81,6 +81,51 @@ h1 {
     background-color: #0056b3;
 }
 
+.contact-section {
+    text-align: left;
+}
+
+.contact-section h3 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #444;
+}
+
+#contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#contact-form input,
+#contact-form textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+#contact-form textarea {
+    height: 100px;
+    resize: none;
+}
+
+.submit-btn {
+    background-color: #34c759;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #2da44e;
+}
+
 /* 로또 색상 (1~10: 노랑, 11~20: 파랑, 21~30: 빨강, 31~40: 회색, 41~45: 초록) */
 .num-yellow { background-color: #fbc02d; }
 .num-blue { background-color: #1976d2; }

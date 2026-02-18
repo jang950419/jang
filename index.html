@@ -19,6 +19,18 @@
             </div>
         </div>
         <button id="generate-btn">번호 생성하기</button>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+        <div class="contact-section">
+            <h3>제휴 문의</h3>
+            <form action="https://formspree.io/f/your-id" method="POST" id="contact-form">
+                <input type="text" name="name" placeholder="성함/업체명" required>
+                <input type="email" name="_replyto" placeholder="이메일 주소" required>
+                <textarea name="message" placeholder="문의 내용을 입력해주세요" required></textarea>
+                <button type="submit" class="submit-btn">문의 보내기</button>
+            </form>
+        </div>
     </div>
     <script src="main.js"></script>
 </body>
