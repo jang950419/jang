@@ -172,8 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     description: `추천 번호: ${mainNums}\n보너스 번호: ${bonusNum}`,
                     imageUrl: 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?q=80&w=1000&auto=format&fit=crop',
                     link: {
-                        mobileWebUrl: 'https://jang950419.github.io/jnag/',
-                        webUrl: 'https://jang950419.github.io/jnag/',
+                        mobileWebUrl: window.location.href.split('?')[0].split('#')[0],
+                        webUrl: window.location.href.split('?')[0].split('#')[0],
                     },
                 },
                 social: {
@@ -184,8 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     {
                         title: '행운의 번호 생성하러 가기',
                         link: {
-                            mobileWebUrl: 'https://jang950419.github.io/jnag/',
-                            webUrl: 'https://jang950419.github.io/jnag/',
+                            mobileWebUrl: window.location.href.split('?')[0].split('#')[0],
+                            webUrl: window.location.href.split('?')[0].split('#')[0],
                         },
                     }
                 ],
