@@ -437,8 +437,148 @@ body.dark-mode h2 { color: #fff; }
 
 .footer-links a { color: #cbd5e1; text-decoration: none; margin: 0 15px; font-size: 0.95rem; }
 
+/* Secondary Actions */
+.secondary-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+    animation: fadeIn 0.5s ease both;
+}
+
+.secondary-actions.hidden {
+    display: none;
+}
+
+.action-btn {
+    padding: 15px 10px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+}
+
+.save-btn { background-color: #6366f1; }
+.download-btn { background-color: #10b981; }
+.kakao-btn { background-color: #fee500; color: #1e1e1e; }
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Saved Numbers Container */
+.saved-numbers-container {
+    max-width: 850px;
+    margin: 40px auto 0;
+    background: var(--container-bg);
+    padding: 30px 50px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    border: 1px solid var(--border-color);
+}
+
+.saved-numbers-container.hidden {
+    display: none;
+}
+
+.saved-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.saved-header h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.clear-btn {
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.saved-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.saved-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    animation: slideIn 0.3s ease both;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-10px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.saved-nums {
+    display: flex;
+    gap: 8px;
+}
+
+.saved-ball {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.delete-item-btn {
+    background: none;
+    border: none;
+    color: var(--sub-text);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.delete-item-btn:hover {
+    color: var(--secondary-color);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 768px) {
-    .hero-section h1 { font-size: 2.2rem; }
-    .form-grid { grid-template-columns: 1fr; }
-    .gnb { display: none; }
+    .secondary-actions {
+        grid-template-columns: 1fr;
+    }
+    .saved-nums {
+        flex-wrap: wrap;
+        max-width: 200px;
+    }
+    .saved-numbers-container {
+        padding: 20px;
+    }
 }
