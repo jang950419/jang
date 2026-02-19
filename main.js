@@ -7,10 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const kakaoShareBtn = document.getElementById('kakao-share-btn');
 
     // 카카오 SDK 초기화
-    if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
-        // 여기에 본인의 카카오 JavaScript 키를 입력하세요
-        Kakao.init('783ea95e648ce119ed52cb5cedd02710'); 
+    function initKakao() {
+        if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
+            Kakao.init('e1c0999230ec9df7cc9114c77d481bb5'); 
+            console.log('Kakao SDK Initialized');
+        }
     }
+    initKakao();
 
     let lastGeneratedSet = []; // 공유를 위한 데이터 저장
 
