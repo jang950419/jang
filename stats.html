@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S0GN3HN60D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S0GN3HN60D');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="역대 로또 당첨 번호를 분석한 심층 통계 정보. 가장 많이 나온 숫자, 구간별 출현 빈도 등을 그래프로 확인하세요.">
+    <title>당첨 통계 분석 - LottoMaster</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="wrap">
+        <header class="site-header">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-gem"></i> Lotto<span>Master</span>
+                </a>
+            </div>
+            <div class="header-right">
+                <nav class="gnb">
+                    <ul>
+                        <li><a href="index.html#generator">번호 생성</a></li>
+                        <li><a href="stats.html" class="active">당첨 통계</a></li>
+                        <li><a href="index.html#analysis">확률 분석</a></li>
+                        <li><a href="index.html#guide">이용 가이드</a></li>
+                    </ul>
+                </nav>
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="테마 전환">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <section class="hero-section small">
+                <h1>데이터로 보는 로또<br>심층 통계 분석</h1>
+                <p>1회차부터 최신 회차까지 모든 당첨 번호를 분석하여<br>출현 빈도와 패턴을 시각화했습니다.</p>
+            </section>
+
+            <div id="stats-loader" class="loader-container">
+                <div class="loader"></div>
+                <p>최신 데이터를 불러오는 중입니다...</p>
+            </div>
+
+            <div id="stats-content" class="stats-container hidden">
+                <!-- Summary Cards -->
+                <div class="stats-summary">
+                    <div class="stat-card">
+                        <span class="label">총 분석 회차</span>
+                        <span id="total-rounds" class="value">-</span>
+                    </div>
+                    <div id="top-number-card" class="stat-card highlight">
+                        <span class="label">최다 출현 번호</span>
+                        <span id="top-number" class="value">-</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">최근 업데이트</span>
+                        <span id="last-update" class="value">-</span>
+                    </div>
+                </div>
+
+                <!-- Number Frequency Chart -->
+                <section class="chart-section">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-bar"></i> 번호별 출현 횟수</h2>
+                        <p>1번부터 45번까지 각 번호가 몇 번 당첨되었는지 분석합니다.</p>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="frequencyChart"></canvas>
+                    </div>
+                </section>
+
+                <div class="grid-2col-stats">
+                    <!-- Range Frequency Chart -->
+                    <section class="chart-section">
+                        <div class="chart-header">
+                            <h2><i class="fas fa-chart-pie"></i> 구간별 출현 비율</h2>
+                            <p>번호대별(1-10, 11-20 등) 출현 빈도를 확인하세요.</p>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="rangeChart"></canvas>
+                        </div>
+                    </section>
+
+                    <!-- Odd/Even Chart -->
+                    <section class="chart-section">
+                        <div class="chart-header">
+                            <h2><i class="fas fa-balance-scale"></i> 홀수 vs 짝수 비율</h2>
+                            <p>당첨 번호의 홀짝 분포를 분석합니다.</p>
+                        </div>
+                        <div class="chart-wrapper small">
+                            <canvas id="oddEvenChart"></canvas>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Frequency Table -->
+                <section class="table-section">
+                    <div class="table-header">
+                        <h2><i class="fas fa-list-ol"></i> 상세 출현 데이터</h2>
+                    </div>
+                    <div class="table-container">
+                        <table id="frequency-table">
+                            <thead>
+                                <tr>
+                                    <th>번호</th>
+                                    <th>출현 횟수</th>
+                                    <th>보너스 포함</th>
+                                    <th>상태</th>
+                                </tr>
+                            </thead>
+                            <tbody id="frequency-table-body">
+                                <!-- 데이터가 여기에 들어감 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-content">
+                <div class="footer-logo">LottoMaster</div>
+                <p>본 통계 데이터는 공개된 당첨 결과를 바탕으로 산출되었습니다.<br>과거의 데이터가 미래의 당첨을 보장하지 않으므로 재미로만 활용해 주세요.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">개인정보처리방침</a>
+                    <a href="terms.html">이용약관</a>
+                </div>
+                <p class="copyright">&copy; 2026 LottoMaster. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="stats.js"></script>
+</body>
+</html>
