@@ -4,18 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const excludeInput = document.getElementById('exclude-numbers');
     const includeInput = document.getElementById('include-number');
     const gameCountSelect = document.getElementById('game-count');
-    const kakaoShareBtn = document.getElementById('kakao-share-btn');
-
-    // 카카오 SDK 초기화
-    function initKakao() {
-        if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
-            Kakao.init('e1c0999230ec9df7cc9114c77d481bb5'); 
-            console.log('Kakao SDK Initialized');
-        }
-    }
-    initKakao();
-
-    let lastGeneratedSet = []; // 공유를 위한 데이터 저장
 
     // 번호 색상 결정 함수
     function getColorClass(num) {
@@ -72,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 결과 영역 초기화
         resultArea.innerHTML = '';
-        lastGeneratedSet = []; 
 
         // 게임 수만큼 반복 생성
         for (let i = 0; i < gameCount; i++) {
@@ -115,36 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
             row.appendChild(bonusBall);
 
             resultArea.appendChild(row);
-
-            // 첫 번째 게임만 공유 데이터로 저장
-            if (i === 0) {
-                lastGeneratedSet = { main: currentNumbers, bonus: bonusNumber };
-            }
         }
-
-        if (kakaoShareBtn) kakaoShareBtn.classList.remove('hidden');
     }
 
     if (generateBtn) generateBtn.addEventListener('click', generateLotto);
-
-    // 카카오톡 공유 이벤트
-    if (kakaoShareBtn) {
-        kakaoShareBtn.addEventListener('click', () => {
-            if (!lastGeneratedSet.main) return;
-
-            const mainNums = lastGeneratedSet.main.join(', ');
-            const bonusNum = lastGeneratedSet.bonus;
-
-            Kakao.Share.sendDefault({
-                objectType: 'text',
-                text: `🍀 행운의 로또 번호가 도착했습니다!\n\n번호: ${mainNums}\n보너스: ${bonusNum}\n\n오늘의 주인공은 당신입니다! 지금 바로 확인해보세요.`,
-                link: {
-                    mobileWebUrl: window.location.href,
-                    webUrl: window.location.href,
-                },
-            });
-        });
-    }
 
     // FAQ 토글 기능
     const faqItems = document.querySelectorAll('.faq-item .question');
