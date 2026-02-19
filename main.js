@@ -91,10 +91,25 @@ document.addEventListener('DOMContentLoaded', () => {
             // 정렬
             currentNumbers.sort((a, b) => a - b);
 
-            // 화면 표시
+            // 보너스 번호 생성 (남은 pool에서 1개 추출)
+            const bonusIndex = Math.floor(Math.random() * pool.length);
+            const bonusNumber = pool[bonusIndex];
+
+            // 화면 표시 (기존 6개)
             currentNumbers.forEach(num => {
                 row.appendChild(createBall(num));
             });
+
+            // + 아이콘 추가
+            const plusIcon = document.createElement('div');
+            plusIcon.className = 'plus-icon';
+            plusIcon.innerHTML = '<i class="fas fa-plus"></i>';
+            row.appendChild(plusIcon);
+
+            // 보너스 번호 추가
+            const bonusBall = createBall(bonusNumber);
+            bonusBall.classList.add('bonus-ball'); // 보너스 공 전용 클래스
+            row.appendChild(bonusBall);
 
             resultArea.appendChild(row);
         }

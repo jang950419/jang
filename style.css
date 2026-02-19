@@ -252,9 +252,29 @@ body.dark-mode .logo a {
 .lotto-row {
     display: flex;
     gap: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
+}
+
+.plus-icon {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    opacity: 0.6;
+}
+
+.ball.bonus-ball {
+    transform: scale(1.05);
+    border: 3px solid var(--accent-color);
+}
+
+body.dark-mode .ball.bonus-ball {
+    border-color: #fff;
 }
 
 .ball {
