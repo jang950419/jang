@@ -2,3 +2,9 @@ node_modules/
 .DS_Store
 .idx/
 .vscode/
+
+.gemini/
+gha-creds-*.json
+firebase-debug.log
+.firebaserc
+firebase.json
