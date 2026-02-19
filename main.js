@@ -168,12 +168,12 @@ document.addEventListener('DOMContentLoaded', () => {
             Kakao.Share.sendDefault({
                 objectType: 'feed',
                 content: {
-                    title: '🍀 이번 주 행운의 번호 도착!',
+                    title: '🍀 이번 주 행운의 로또 번호',
                     description: `추천 번호: ${mainNums}\n보너스 번호: ${bonusNum}`,
-                    imageUrl: 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?q=80&w=1000&auto=format&fit=crop', // 로또/행운 테마 이미지
+                    imageUrl: 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?q=80&w=1000&auto=format&fit=crop',
                     link: {
-                        mobileWebUrl: window.location.href,
-                        webUrl: window.location.href,
+                        mobileWebUrl: 'https://jang950419.github.io/jnag/',
+                        webUrl: 'https://jang950419.github.io/jnag/',
                     },
                 },
                 social: {
@@ -182,10 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 buttons: [
                     {
-                        title: '나도 번호 생성하기',
+                        title: '행운의 번호 생성하러 가기',
                         link: {
-                            mobileWebUrl: window.location.href,
-                            webUrl: window.location.href,
+                            mobileWebUrl: 'https://jang950419.github.io/jnag/',
+                            webUrl: 'https://jang950419.github.io/jnag/',
                         },
                     }
                 ],
