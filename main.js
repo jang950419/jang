@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 카카오 SDK 초기화
     if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
         // 여기에 본인의 카카오 JavaScript 키를 입력하세요
-        Kakao.init('ca-pub-9234076405976097'); 
+        Kakao.init('783ea95e648ce119ed52cb5cedd02710'); 
     }
 
     let lastGeneratedSet = []; // 공유를 위한 데이터 저장
