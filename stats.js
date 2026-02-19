@@ -26,58 +26,95 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isDark) themeIcon.classList.replace('fa-moon', 'fa-sun');
                 else themeIcon.classList.replace('fa-sun', 'fa-moon');
             }
-            // 차트 색상 업데이트를 위해 새로고침 혹은 차트 리로드 로직이 필요할 수 있음
-            location.reload(); // 가장 간단한 방법
+            location.reload(); 
         });
     }
 
     // 데이터 가져오기 및 분석
     async function fetchAndAnalyze() {
-        try {
-            const response = await fetch('https://smok95.github.io/lotto/results/all.json');
-            const data = await response.json();
-            
-            analyzeData(data);
-            
-            statsLoader.classList.add('hidden');
-            statsContent.classList.remove('hidden');
-        } catch (error) {
-            console.error('Data fetch error:', error);
-            statsLoader.innerHTML = '<p>데이터를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.</p>';
+        // 여러 데이터 소스를 시도하여 안정성 확보
+        const sources = [
+            'https://smok95.github.io/lotto/results/all.json',
+            'https://raw.githubusercontent.com/smok95/lotto/master/results/all.json'
+        ];
+
+        let data = null;
+        let fetchError = null;
+
+        for (const url of sources) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+                data = await response.json();
+                if (data) break; // 성공하면 루프 탈출
+            } catch (error) {
+                console.warn(`Failed to fetch from ${url}:`, error);
+                fetchError = error;
+            }
+        }
+
+        if (data) {
+            try {
+                analyzeData(data);
+                statsLoader.classList.add('hidden');
+                statsContent.classList.remove('hidden');
+            } catch (err) {
+                console.error('Data analysis error:', err);
+                showError('데이터 분석 중 오류가 발생했습니다.');
+            }
+        } else {
+            showError('데이터를 불러올 수 없습니다. 네트워크 연결을 확인해주세요.');
         }
     }
 
+    function showError(msg) {
+        statsLoader.innerHTML = `
+            <div style="color: var(--secondary-color); padding: 20px;">
+                <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <p>${msg}</p>
+                <button onclick="location.reload()" class="action-btn save-btn" style="margin-top: 20px; display: inline-flex;">다시 시도</button>
+            </div>
+        `;
+    }
+
     function analyzeData(allData) {
-        const rounds = Object.values(allData);
+        // 객체 형태 또는 배열 형태 모두 대응
+        const rounds = Array.isArray(allData) ? allData : Object.values(allData);
+        if (rounds.length === 0) throw new Error('No data found');
+
         const totalRounds = rounds.length;
-        
         const counts = Array(46).fill(0);
         const bonusCounts = Array(46).fill(0);
-        const rangeCounts = [0, 0, 0, 0, 0]; // 1-10, 11-20, 21-30, 31-40, 41-45
+        const rangeCounts = [0, 0, 0, 0, 0];
         let totalOdds = 0;
         let totalEvens = 0;
 
         rounds.forEach(round => {
-            const nums = [round.drwtNo1, round.drwtNo2, round.drwtNo3, round.drwtNo4, round.drwtNo5, round.drwtNo6];
-            const bonus = round.bnusNo;
+            // 필드명이 다를 경우를 대비한 유연한 추출
+            const n1 = round.drwtNo1 || round.no1;
+            const n2 = round.drwtNo2 || round.no2;
+            const n3 = round.drwtNo3 || round.no3;
+            const n4 = round.drwtNo4 || round.no4;
+            const n5 = round.drwtNo5 || round.no5;
+            const n6 = round.drwtNo6 || round.no6;
+            const bn = round.bnusNo || round.bonus;
 
+            const nums = [n1, n2, n3, n4, n5, n6].filter(n => n !== undefined);
+            
             nums.forEach(n => {
                 counts[n]++;
-                // 구간 계산
                 if (n <= 10) rangeCounts[0]++;
                 else if (n <= 20) rangeCounts[1]++;
                 else if (n <= 30) rangeCounts[2]++;
                 else if (n <= 40) rangeCounts[3]++;
                 else rangeCounts[4]++;
 
-                // 홀짝 계산
                 if (n % 2 === 0) totalEvens++;
                 else totalOdds++;
             });
-            bonusCounts[bonus]++;
+            if (bn) bonusCounts[bn]++;
         });
 
-        // 요약 정보 업데이트
         totalRoundsEl.textContent = `${totalRounds}회`;
         
         let maxFreq = 0;
@@ -91,18 +128,11 @@ document.addEventListener('DOMContentLoaded', () => {
         topNumberEl.textContent = `${topNum}번 (${maxFreq}회)`;
         
         const lastRound = rounds[rounds.length - 1];
-        lastUpdateEl.textContent = lastRound.drwNoDate || '최신';
+        lastUpdateEl.textContent = lastRound.drwNoDate || lastRound.date || '최신';
 
-        // 차트 1: 번호별 빈도 (Bar Chart)
         renderFrequencyChart(counts);
-
-        // 차트 2: 구간별 비율 (Pie Chart)
         renderRangeChart(rangeCounts);
-
-        // 차트 3: 홀짝 비율 (Doughnut Chart)
         renderOddEvenChart(totalOdds, totalEvens);
-
-        // 테이블 업데이트
         renderTable(counts, bonusCounts);
     }
 
@@ -131,12 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: { beginAtZero: true }
-                }
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
             }
         });
     }
@@ -152,10 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     backgroundColor: ['#ffd700', '#60a5fa', '#f87171', '#94a3b8', '#4ade80']
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
     }
 
@@ -170,10 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     backgroundColor: ['#f43f5e', '#3b82f6']
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
     }
 
@@ -188,13 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // 전체 횟수 내림차순 정렬
         sortedData.sort((a, b) => b.count - a.count);
 
+        tableBody.innerHTML = '';
         sortedData.forEach(item => {
             const row = document.createElement('tr');
-            
-            // 상태 뱃지 결정
             let statusBadge = '';
             if (item.count > 165) statusBadge = '<span class="status hot">HOT</span>';
             else if (item.count < 140) statusBadge = '<span class="status cold">COLD</span>';
