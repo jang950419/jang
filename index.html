@@ -36,6 +36,8 @@
     <link rel="stylesheet" href="style.css">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Kakao SDK -->
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js" integrity="sha384-l6S9p9XAnHeYpq9fRKUfcpyW7dfp9kjm7ZueQuCCKlb2of7s1fLatuu/7zZJ40fW" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="wrap">
@@ -105,6 +107,9 @@
                     <div class="action-area">
                         <button id="generate-btn" class="generate-btn">
                             <i class="fas fa-magic"></i> 번호 생성하기
+                        </button>
+                        <button id="kakao-share-btn" class="kakao-btn hidden">
+                            <i class="fas fa-comment"></i> 카카오톡으로 공유하기
                         </button>
                     </div>
                 </div>

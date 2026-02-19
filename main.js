@@ -4,6 +4,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const excludeInput = document.getElementById('exclude-numbers');
     const includeInput = document.getElementById('include-number');
     const gameCountSelect = document.getElementById('game-count');
+    const kakaoShareBtn = document.getElementById('kakao-share-btn');
+
+    // 카카오 SDK 초기화
+    if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
+        // 여기에 본인의 카카오 JavaScript 키를 입력하세요
+        Kakao.init('ca-pub-9234076405976097'); 
+    }
+
+    let lastGeneratedSet = []; // 공유를 위한 데이터 저장
 
     // 번호 색상 결정 함수
     function getColorClass(num) {
@@ -49,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('제외할 번호는 1~45 사이의 숫자여야 합니다.');
             return;
         }
-        if (excludeNumbers.length > 39) { // 최소 6개는 남아야 함
+        if (excludeNumbers.length > 39) {
             alert('제외할 번호가 너무 많습니다.');
             return;
         }
@@ -60,77 +69,90 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 결과 영역 초기화
         resultArea.innerHTML = '';
+        lastGeneratedSet = []; 
 
         // 게임 수만큼 반복 생성
         for (let i = 0; i < gameCount; i++) {
             const row = document.createElement('div');
             row.className = 'lotto-row';
 
-            // 1~45 풀 생성
             let pool = Array.from({length: 45}, (_, k) => k + 1);
-
-            // 제외수 제거
             pool = pool.filter(n => !excludeNumbers.includes(n));
 
-            // 포함수 처리 (이미 있다면 풀에서 제거하고 결과 배열에 추가)
             let currentNumbers = [];
             if (includeNumber) {
                 currentNumbers.push(includeNumber);
                 pool = pool.filter(n => n !== includeNumber);
             }
 
-            // 나머지 번호 랜덤 추출
             while (currentNumbers.length < 6) {
-                if (pool.length === 0) break; // 안전장치
+                if (pool.length === 0) break;
                 const randomIndex = Math.floor(Math.random() * pool.length);
                 const num = pool[randomIndex];
                 currentNumbers.push(num);
-                pool.splice(randomIndex, 1); // 뽑은 번호 제거
+                pool.splice(randomIndex, 1);
             }
 
-            // 정렬
             currentNumbers.sort((a, b) => a - b);
 
-            // 보너스 번호 생성 (남은 pool에서 1개 추출)
             const bonusIndex = Math.floor(Math.random() * pool.length);
             const bonusNumber = pool[bonusIndex];
 
-            // 화면 표시 (기존 6개)
             currentNumbers.forEach(num => {
                 row.appendChild(createBall(num));
             });
 
-            // + 아이콘 추가
             const plusIcon = document.createElement('div');
             plusIcon.className = 'plus-icon';
             plusIcon.innerHTML = '<i class="fas fa-plus"></i>';
             row.appendChild(plusIcon);
 
-            // 보너스 번호 추가
             const bonusBall = createBall(bonusNumber);
-            bonusBall.classList.add('bonus-ball'); // 보너스 공 전용 클래스
+            bonusBall.classList.add('bonus-ball');
             row.appendChild(bonusBall);
 
             resultArea.appendChild(row);
+
+            // 첫 번째 게임만 공유 데이터로 저장
+            if (i === 0) {
+                lastGeneratedSet = { main: currentNumbers, bonus: bonusNumber };
+            }
         }
+
+        if (kakaoShareBtn) kakaoShareBtn.classList.remove('hidden');
     }
 
     if (generateBtn) generateBtn.addEventListener('click', generateLotto);
+
+    // 카카오톡 공유 이벤트
+    if (kakaoShareBtn) {
+        kakaoShareBtn.addEventListener('click', () => {
+            if (!lastGeneratedSet.main) return;
+
+            const mainNums = lastGeneratedSet.main.join(', ');
+            const bonusNum = lastGeneratedSet.bonus;
+
+            Kakao.Share.sendDefault({
+                objectType: 'text',
+                text: `🍀 행운의 로또 번호가 도착했습니다!\n\n번호: ${mainNums}\n보너스: ${bonusNum}\n\n오늘의 주인공은 당신입니다! 지금 바로 확인해보세요.`,
+                link: {
+                    mobileWebUrl: window.location.href,
+                    webUrl: window.location.href,
+                },
+            });
+        });
+    }
 
     // FAQ 토글 기능
     const faqItems = document.querySelectorAll('.faq-item .question');
     faqItems.forEach(item => {
         item.addEventListener('click', () => {
             const answer = item.nextElementSibling;
-            if (answer.style.display === 'block') {
-                answer.style.display = 'none';
-            } else {
-                answer.style.display = 'block';
-            }
+            answer.style.display = (answer.style.display === 'block') ? 'none' : 'block';
         });
     });
 
-    // 제휴 문의 폼 토글 기능
+    // 제휴 문의 폼 토글
     const showContactBtn = document.getElementById('show-contact-btn');
     const contactFormWrapper = document.getElementById('contact-form-wrapper');
 
@@ -149,35 +171,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 테마 전환 (다크/라이트 모드) 기능
+    // 테마 전환
     const themeToggleBtn = document.getElementById('theme-toggle');
     const body = document.body;
     const themeIcon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
 
-    // 저장된 테마 불러오기
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         body.classList.add('dark-mode');
         if (themeIcon) {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
         }
     }
 
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
-            
             const isDark = body.classList.contains('dark-mode');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-
-            // 아이콘 교체
-            if (isDark) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            } else {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
+            if (themeIcon) {
+                if (isDark) themeIcon.classList.replace('fa-moon', 'fa-sun');
+                else themeIcon.classList.replace('fa-sun', 'fa-moon');
             }
         });
     }
