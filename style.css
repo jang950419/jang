@@ -406,6 +406,8 @@ body {
 
 .contact-form-wrapper.hidden { display: none; }
 
+.hidden { display: none !important; }
+
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
 
 #contact-form input, #contact-form textarea {

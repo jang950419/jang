@@ -196,8 +196,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 저장된 번호 렌더링
     function renderSavedNumbers() {
         const saved = JSON.parse(localStorage.getItem('savedLotto') || '[]');
+        
         if (saved.length === 0) {
             savedNumbersContainer.classList.add('hidden');
+            savedList.innerHTML = '';
             return;
         }
 
