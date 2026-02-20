@@ -235,11 +235,24 @@ body {
     to { transform: scale(1); opacity: 1; }
 }
 
-.ball.yellow { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
-.ball.blue { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); }
-.ball.red { background: linear-gradient(135deg, #f87171 0%, #ef4444 100%); }
-.ball.gray { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); }
-.ball.green { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+.ball.yellow, .saved-ball.yellow { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+.ball.blue, .saved-ball.blue { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); }
+.ball.red, .saved-ball.red { background: linear-gradient(135deg, #f87171 0%, #ef4444 100%); }
+.ball.gray, .saved-ball.gray { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); }
+.ball.green, .saved-ball.green { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+
+.plus-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sub-text);
+    font-size: 1.2rem;
+    margin: 0 5px;
+}
+
+.bonus-ball {
+    position: relative;
+}
 
 /* Buttons */
 .generate-btn {
