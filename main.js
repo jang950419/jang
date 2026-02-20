@@ -78,12 +78,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentMode === 'powerball') {
             return isSpecial ? 'powerball-special' : 'powerball-main';
         }
-        // 기존 로또 색상
-        if (num <= 10) return 'yellow';
-        if (num <= 20) return 'blue';
-        if (num <= 30) return 'red';
-        if (num <= 40) return 'gray';
-        return 'green';
+        // 기존 로또 색상 범위를 십 단위로 변경 (사용자 요청 반영)
+        if (num < 10) return 'yellow';  // 1~9
+        if (num < 20) return 'blue';    // 10~19
+        if (num < 30) return 'red';     // 20~29
+        if (num < 40) return 'gray';    // 30~39
+        return 'green';                 // 40~45
     }
 
     // 공 생성 함수
