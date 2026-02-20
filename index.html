@@ -74,7 +74,11 @@
                 <div class="tool-container">
                     <div class="tool-header">
                         <h2 style="margin-bottom: 10px;"><i class="fas fa-cogs"></i> 스마트 번호 생성기</h2>
-                        <p style="color: var(--sub-text); font-size: 0.9rem; margin-bottom: 30px;">원하는 조건을 설정하여 최적의 번호를 추출하세요.</p>
+                        <div class="mode-tabs">
+                            <button class="mode-tab active" data-mode="lotto">로또 6/45</button>
+                            <button class="mode-tab" data-mode="powerball">파워볼 (Powerball)</button>
+                        </div>
+                        <p id="mode-description" style="color: var(--sub-text); font-size: 0.9rem; margin-bottom: 30px;">원하는 조건을 설정하여 최적의 번호를 추출하세요.</p>
                     </div>
 
                     <div class="options-panel">

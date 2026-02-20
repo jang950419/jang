@@ -14,7 +14,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedList = document.getElementById('saved-list');
     const clearSavedBtn = document.getElementById('clear-saved-btn');
 
-    let lastGeneratedGames = []; // 공유 및 저장을 위한 데이터 저장
+    const modeTabs = document.querySelectorAll('.mode-tab');
+    const modeDescription = document.getElementById('mode-description');
+
+    let currentMode = 'lotto'; // 'lotto' or 'powerball'
+    let lastGeneratedGames = [];
+
+    // 모드 설정 값
+    const modeConfigs = {
+        lotto: {
+            maxMain: 45,
+            mainCount: 6,
+            hasSpecial: true,
+            specialRange: 45,
+            specialLabel: '보너스',
+            description: '1~45 중 6개 + 보너스 번호를 추출합니다.'
+        },
+        powerball: {
+            maxMain: 69,
+            mainCount: 5,
+            hasSpecial: true,
+            specialRange: 26,
+            specialLabel: '파워볼',
+            description: '1~69 중 5개 + 1~26 중 파워볼 1개를 추출합니다.'
+        }
+    };
+
+    // 모드 전환 이벤트
+    modeTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            modeTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentMode = tab.dataset.mode;
+            updateModeUI();
+        });
+    });
+
+    function updateModeUI() {
+        const config = modeConfigs[currentMode];
+        modeDescription.textContent = config.description;
+        includeInput.max = config.maxMain;
+        includeInput.placeholder = `예: ${Math.floor(config.maxMain / 2)}`;
+        excludeInput.placeholder = `예: 1, 15 (1~${config.maxMain})`;
+        resultArea.innerHTML = `
+            <div class="placeholder-text">
+                <i class="fas fa-dice" style="font-size: 2rem; margin-bottom: 10px;"></i><br>
+                '${config.specialLabel}' 기반 번호 생성하기를 눌러보세요.
+            </div>
+        `;
+        secondaryActions.classList.add('hidden');
+    }
 
     // 카카오 SDK 초기화
     function initKakao() {
@@ -25,7 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initKakao();
 
     // 번호 색상 결정 함수
-    function getColorClass(num) {
+    function getColorClass(num, isSpecial = false) {
+        if (currentMode === 'powerball') {
+            return isSpecial ? 'powerball-special' : 'powerball-main';
+        }
+        // 기존 로또 색상
         if (num <= 10) return 'yellow';
         if (num <= 20) return 'blue';
         if (num <= 30) return 'red';
@@ -33,16 +86,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'green';
     }
 
-    // 로또 공 생성 함수
-    function createBall(num, small = false) {
+    // 공 생성 함수
+    function createBall(num, isSpecial = false, small = false) {
         const ball = document.createElement('div');
-        ball.className = small ? `saved-ball ${getColorClass(num)}` : `ball ${getColorClass(num)}`;
+        const colorClass = getColorClass(num, isSpecial);
+        ball.className = small ? `saved-ball ${colorClass}` : `ball ${colorClass}`;
+        if (isSpecial && !small) ball.classList.add('bonus-ball');
         ball.textContent = num;
         return ball;
     }
 
     // 메인 로직: 번호 생성
-    function generateLotto() {
+    function generateNumbers() {
+        const config = modeConfigs[currentMode];
         const gameCount = parseInt(gameCountSelect.value);
         const excludeStr = excludeInput.value.trim();
         const includeStr = includeInput.value.trim();
@@ -55,22 +111,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let includeNumber = null;
         if (includeStr) {
             includeNumber = parseInt(includeStr);
-            if (isNaN(includeNumber) || includeNumber < 1 || includeNumber > 45) {
-                alert('포함할 번호는 1~45 사이의 숫자여야 합니다.');
+            if (isNaN(includeNumber) || includeNumber < 1 || includeNumber > config.maxMain) {
+                alert(`포함할 번호는 1~${config.maxMain} 사이의 숫자여야 합니다.`);
                 return;
             }
         }
 
-        if (excludeNumbers.some(n => n < 1 || n > 45)) {
-            alert('제외할 번호는 1~45 사이의 숫자여야 합니다.');
-            return;
-        }
-        if (excludeNumbers.length > 39) {
-            alert('제외할 번호가 너무 많습니다.');
-            return;
-        }
-        if (includeNumber && excludeNumbers.includes(includeNumber)) {
-            alert('포함할 번호와 제외할 번호가 겹칩니다.');
+        if (excludeNumbers.some(n => n < 1 || n > config.maxMain)) {
+            alert(`제외할 번호는 1~${config.maxMain} 사이의 숫자여야 합니다.`);
             return;
         }
 
@@ -81,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = document.createElement('div');
             row.className = 'lotto-row';
 
-            let pool = Array.from({length: 45}, (_, k) => k + 1);
+            let pool = Array.from({length: config.maxMain}, (_, k) => k + 1);
             pool = pool.filter(n => !excludeNumbers.includes(n));
 
             let currentNumbers = [];
@@ -90,7 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 pool = pool.filter(n => n !== includeNumber);
             }
 
-            while (currentNumbers.length < 6) {
+            // 메인 번호 추출
+            while (currentNumbers.length < config.mainCount) {
                 const randomIndex = Math.floor(Math.random() * pool.length);
                 const num = pool[randomIndex];
                 currentNumbers.push(num);
@@ -99,11 +148,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             currentNumbers.sort((a, b) => a - b);
 
-            const bonusIndex = Math.floor(Math.random() * pool.length);
-            const bonusNumber = pool[bonusIndex];
+            // 특별 번호(보너스/파워볼) 추출
+            let specialNumber;
+            if (currentMode === 'lotto') {
+                const bonusIndex = Math.floor(Math.random() * pool.length);
+                specialNumber = pool[bonusIndex];
+            } else {
+                // 파워볼은 별도의 풀(1~26)에서 추출
+                specialNumber = Math.floor(Math.random() * config.specialRange) + 1;
+            }
 
             currentNumbers.forEach(num => {
-                row.appendChild(createBall(num));
+                row.appendChild(createBall(num, false));
             });
 
             const plusIcon = document.createElement('div');
@@ -111,18 +167,20 @@ document.addEventListener('DOMContentLoaded', () => {
             plusIcon.innerHTML = '<i class="fas fa-plus"></i>';
             row.appendChild(plusIcon);
 
-            const bonusBall = createBall(bonusNumber);
-            bonusBall.classList.add('bonus-ball');
-            row.appendChild(bonusBall);
+            row.appendChild(createBall(specialNumber, true));
 
             resultArea.appendChild(row);
-            lastGeneratedGames.push({ main: currentNumbers, bonus: bonusNumber });
+            lastGeneratedGames.push({ 
+                mode: currentMode,
+                main: currentNumbers, 
+                bonus: specialNumber 
+            });
         }
 
         secondaryActions.classList.remove('hidden');
     }
 
-    if (generateBtn) generateBtn.addEventListener('click', generateLotto);
+    if (generateBtn) generateBtn.addEventListener('click', generateNumbers);
 
     // 기능 1: 저장하기
     if (saveBtn) {
@@ -130,8 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lastGeneratedGames.length === 0) return;
             
             let saved = JSON.parse(localStorage.getItem('savedLotto') || '[]');
-            // 최신 생성된 게임들을 저장 목록 맨 앞에 추가
-            saved = [...lastGeneratedGames, ...saved].slice(0, 20); // 최대 20개만 유지
+            saved = [...lastGeneratedGames, ...saved].slice(0, 20);
             localStorage.setItem('savedLotto', JSON.stringify(saved));
             
             renderSavedNumbers();
@@ -149,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 scale: 2
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `lotto-master-${new Date().getTime()}.png`;
+                link.download = `${currentMode}-master-${new Date().getTime()}.png`;
                 link.href = canvas.toDataURL();
                 link.click();
             });
@@ -162,14 +219,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lastGeneratedGames.length === 0) return;
 
             const firstGame = lastGeneratedGames[0];
+            const modeName = firstGame.mode === 'lotto' ? '로또 6/45' : '파워볼';
             const mainNums = firstGame.main.join(', ');
-            const bonusNum = firstGame.bonus;
+            const bonusLabel = firstGame.mode === 'lotto' ? '보너스' : '파워볼';
 
             Kakao.Share.sendDefault({
                 objectType: 'feed',
                 content: {
-                    title: '🍀 이번 주 행운의 로또 번호',
-                    description: `추천 번호: ${mainNums}\n보너스 번호: ${bonusNum}`,
+                    title: `🍀 이번 주 행운의 ${modeName} 번호`,
+                    description: `추천 번호: ${mainNums}\n${bonusLabel}: ${firstGame.bonus}`,
                     imageUrl: 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?q=80&w=1000&auto=format&fit=crop',
                     link: {
                         mobileWebUrl: window.location.href.split('?')[0].split('#')[0],
@@ -213,14 +271,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const numsDiv = document.createElement('div');
             numsDiv.className = 'saved-nums';
             
-            game.main.forEach(n => numsDiv.appendChild(createBall(n, true)));
+            // 저장된 게임의 모드를 일시적으로 변경하여 올바른 색상 적용
+            const prevMode = currentMode;
+            currentMode = game.mode || 'lotto'; 
+
+            game.main.forEach(n => numsDiv.appendChild(createBall(n, false, true)));
             
             const plus = document.createElement('span');
             plus.style.margin = '0 5px';
             plus.innerHTML = '<i class="fas fa-plus" style="font-size:0.7rem; opacity:0.5;"></i>';
             numsDiv.appendChild(plus);
             
-            numsDiv.appendChild(createBall(game.bonus, true));
+            numsDiv.appendChild(createBall(game.bonus, true, true));
+
+            currentMode = prevMode; // 모드 복구
 
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'delete-item-btn';
@@ -251,34 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 초기 로드 시 저장된 번호 표시
     renderSavedNumbers();
-
-    // FAQ 토글 기능
-    const faqItems = document.querySelectorAll('.faq-item .question');
-    faqItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const answer = item.nextElementSibling;
-            answer.style.display = (answer.style.display === 'block') ? 'none' : 'block';
-        });
-    });
-
-    // 제휴 문의 폼 토글
-    const showContactBtn = document.getElementById('show-contact-btn');
-    const contactFormWrapper = document.getElementById('contact-form-wrapper');
-
-    if (showContactBtn && contactFormWrapper) {
-        showContactBtn.addEventListener('click', () => {
-            if (contactFormWrapper.classList.contains('hidden')) {
-                contactFormWrapper.classList.remove('hidden');
-                showContactBtn.innerHTML = '<i class="fas fa-times"></i> 닫기';
-                showContactBtn.style.backgroundColor = 'var(--secondary-color)';
-                contactFormWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else {
-                contactFormWrapper.classList.add('hidden');
-                showContactBtn.innerHTML = '<i class="fas fa-envelope"></i> 제휴 문의하기';
-                showContactBtn.style.backgroundColor = 'var(--primary-color)';
-            }
-        });
-    }
 
     // 테마 전환
     const themeToggleBtn = document.getElementById('theme-toggle');
