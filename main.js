@@ -220,14 +220,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const firstGame = lastGeneratedGames[0];
             const modeName = firstGame.mode === 'lotto' ? '로또 6/45' : '파워볼';
-            const mainNums = firstGame.main.join(', ');
+            const mainNums = firstGame.main.join('  '); // 간격을 넓혀 가독성 향상
             const bonusLabel = firstGame.mode === 'lotto' ? '보너스' : '파워볼';
+            const bonusNum = firstGame.bonus;
 
             Kakao.Share.sendDefault({
                 objectType: 'feed',
                 content: {
-                    title: `🍀 이번 주 행운의 ${modeName} 번호`,
-                    description: `추천 번호: ${mainNums}\n${bonusLabel}: ${firstGame.bonus}`,
+                    title: `✨ ${modeName} 행운의 추천 번호`,
+                    description: `🔮 당첨 기원 번호 세트:\n[ ${mainNums} ]\n${bonusLabel}: ${bonusNum}\n\n오늘의 대박 기운을 당신께 보내드립니다! 🍀`,
                     imageUrl: 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?q=80&w=1000&auto=format&fit=crop',
                     link: {
                         mobileWebUrl: window.location.href.split('?')[0].split('#')[0],
@@ -240,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 buttons: [
                     {
-                        title: '행운의 번호 생성하러 가기',
+                        title: '나도 행운의 번호 받기',
                         link: {
                             mobileWebUrl: window.location.href.split('?')[0].split('#')[0],
                             webUrl: window.location.href.split('?')[0].split('#')[0],
