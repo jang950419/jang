@@ -1,4 +1,4 @@
-const URL = "https://teachablemachine.withgoogle.com/models/swB2a6pCH/";
+const MODEL_URL = "https://teachablemachine.withgoogle.com/models/swB2a6pCH/";
 let model, labelContainer, maxPredictions;
 let isModelLoading = false;
 
@@ -8,8 +8,8 @@ async function init() {
     isModelLoading = true;
     
     try {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
+        const modelURL = MODEL_URL + "model.json";
+        const metadataURL = MODEL_URL + "metadata.json";
 
         // load the model and metadata
         model = await tmImage.load(modelURL, metadataURL);
