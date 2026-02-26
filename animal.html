@@ -111,6 +111,15 @@
 
             <section class="tool-section">
                 <div class="tool-container">
+                    <div class="mode-tabs">
+                        <button id="upload-tab" class="mode-tab active" onclick="switchMode('upload')">
+                            <i class="fas fa-image"></i> 사진 업로드
+                        </button>
+                        <button id="webcam-tab" class="mode-tab" onclick="switchMode('webcam')">
+                            <i class="fas fa-camera"></i> 웹캠 사용
+                        </button>
+                    </div>
+
                     <div id="upload-container" class="upload-area" onclick="document.getElementById('file-input').click()">
                         <input type="file" id="file-input" hidden accept="image/*" onchange="handleImageUpload(event)">
                         <div id="upload-prompt">
@@ -119,6 +128,15 @@
                             <p style="font-size: 0.85rem; color: var(--sub-text); margin-top: 5px;">사진은 어디에도 저장되지 않습니다</p>
                         </div>
                         <img id="face-image" src="#" alt="사용자 얼굴 이미지">
+                    </div>
+
+                    <div id="webcam-container" class="upload-area hidden" style="cursor: default; padding: 20px;">
+                        <div style="position: relative; width: 100%; max-width: 400px; margin: 0 auto;">
+                            <video id="webcam-video" autoplay playsinline style="width: 100%; border-radius: 20px; transform: scaleX(-1); background: #000;"></video>
+                        </div>
+                        <button onclick="captureImage()" class="generate-btn" style="margin-top: 20px; width: auto; padding: 12px 30px;">
+                            <i class="fas fa-camera"></i> 사진 찍기
+                        </button>
                     </div>
 
                     <div id="loading" class="result-area hidden">

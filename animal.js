@@ -1,6 +1,7 @@
 const MODEL_URL = "https://teachablemachine.withgoogle.com/models/swB2a6pCH/";
 let model, labelContainer, maxPredictions;
 let isModelLoading = false;
+let webcamStream = null;
 
 // Load the image model
 async function init() {
@@ -23,10 +24,10 @@ async function init() {
     }
 }
 
-async function predict() {
-    const image = document.getElementById("face-image");
+async function predict(imageElement) {
+    const target = imageElement || document.getElementById("face-image");
     try {
-        const prediction = await model.predict(image);
+        const prediction = await model.predict(target);
         
         // Sort predictions by probability
         prediction.sort((a, b) => parseFloat(b.probability) - parseFloat(a.probability));
@@ -124,11 +125,88 @@ function handleImageUpload(event) {
             // Allow image to load before prediction
             img.onload = async () => {
                 if (!model) await init();
-                await predict();
+                await predict(img);
             };
         };
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+// Mode switching logic
+async function switchMode(mode) {
+    const uploadTab = document.getElementById('upload-tab');
+    const webcamTab = document.getElementById('webcam-tab');
+    const uploadContainer = document.getElementById('upload-container');
+    const webcamContainer = document.getElementById('webcam-container');
+    const resultArea = document.getElementById('result-area');
+    
+    // Hide results when switching
+    resultArea.style.display = "none";
+    
+    if (mode === 'upload') {
+        uploadTab.classList.add('active');
+        webcamTab.classList.remove('active');
+        uploadContainer.classList.remove('hidden');
+        webcamContainer.classList.add('hidden');
+        stopWebcam();
+    } else {
+        webcamTab.classList.add('active');
+        uploadTab.classList.remove('active');
+        webcamContainer.classList.remove('hidden');
+        uploadContainer.classList.add('hidden');
+        await startWebcam();
+    }
+}
+
+async function startWebcam() {
+    const video = document.getElementById('webcam-video');
+    try {
+        webcamStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: "user" }, 
+            audio: false 
+        });
+        video.srcObject = webcamStream;
+    } catch (e) {
+        console.error("웹캠 시작 실패:", e);
+        alert("웹캠을 시작할 수 없습니다. 카메라 권한을 확인해주세요.");
+        switchMode('upload');
+    }
+}
+
+function stopWebcam() {
+    if (webcamStream) {
+        webcamStream.getTracks().forEach(track => track.stop());
+        webcamStream = null;
+    }
+}
+
+async function captureImage() {
+    const video = document.getElementById('webcam-video');
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const context = canvas.getContext('2d');
+    // Mirror effect for capture to match video preview
+    context.translate(canvas.width, 0);
+    context.scale(-1, 1);
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Show loading
+    document.getElementById("loading").classList.remove("hidden");
+    document.getElementById("webcam-container").classList.add("hidden");
+    
+    // Show captured image in the upload container (or a separate preview)
+    const img = document.getElementById("face-image");
+    img.src = canvas.toDataURL('image/png');
+    img.style.display = "block";
+    document.getElementById("upload-prompt").style.display = "none";
+    document.getElementById("upload-container").classList.remove("hidden");
+    
+    stopWebcam();
+    
+    if (!model) await init();
+    await predict(img);
 }
 
 // Initializing model loading when page starts
