@@ -5,7 +5,9 @@ let webcamStream = null;
 
 // Load the image model
 async function init() {
-    if (model || isModelLoading) return;
+    if (model) return true;
+    if (isModelLoading) return false;
+    
     isModelLoading = true;
     
     try {
@@ -16,9 +18,11 @@ async function init() {
         model = await tmImage.load(modelURL, metadataURL);
         maxPredictions = model.getTotalClasses();
         labelContainer = document.getElementById("label-container");
+        return true;
     } catch (e) {
         console.error("모델 로딩 실패:", e);
-        alert("AI 모델을 불러오는 데 실패했습니다. 페이지를 새로고침 해주세요.");
+        // Do not alert immediately on init, wait for actual use
+        return false;
     } finally {
         isModelLoading = false;
     }
@@ -26,6 +30,16 @@ async function init() {
 
 async function predict(imageElement) {
     const target = imageElement || document.getElementById("face-image");
+    
+    if (!model) {
+        const success = await init();
+        if (!success) {
+            alert("AI 모델을 불러오는 데 실패했습니다. 인터넷 연결을 확인하고 다시 시도해주세요.");
+            document.getElementById("loading").classList.add("hidden");
+            return;
+        }
+    }
+
     try {
         const prediction = await model.predict(target);
         
@@ -124,7 +138,6 @@ function handleImageUpload(event) {
             
             // Allow image to load before prediction
             img.onload = async () => {
-                if (!model) await init();
                 await predict(img);
             };
         };
@@ -205,13 +218,13 @@ async function captureImage() {
     
     stopWebcam();
     
-    if (!model) await init();
     await predict(img);
 }
 
-// Initializing model loading when page starts
+// Initializing UI when page starts
 document.addEventListener('DOMContentLoaded', () => {
-    init();
+    // Lazy load model instead of immediate load on DOMContentLoaded to avoid navigation errors
+    // init(); 
     
     // Theme toggle functionality (reusing from existing script)
     const themeToggleBtn = document.getElementById('theme-toggle');
