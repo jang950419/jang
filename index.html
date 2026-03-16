@@ -140,34 +140,90 @@
             </section>
 
             <!-- Insight Section for Content Depth -->
-            <section class="insight-section" style="margin-top: 60px; padding: 60px 0; border-top: 1px solid var(--border-color);">
+            <section class="insight-section" style="margin-top: 60px; padding: 80px 0; border-top: 1px solid var(--border-color); background: rgba(var(--primary-rgb), 0.02);">
                 <div class="article-container">
-                    <div style="text-align: center; margin-bottom: 40px;">
-                        <span class="badge">오늘의 통계</span>
-                        <h2 style="font-size: 2rem; margin-top: 10px;">왜 LottoMaster를 선택해야 할까요?</h2>
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <span class="badge" style="background: var(--primary-color); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem;">PREMIUM INSIGHT</span>
+                        <h2 style="font-size: 2.5rem; margin-top: 20px; font-weight: 800; letter-spacing: -1px;">로또 6/45의 과학적 분석과 확률의 이해</h2>
+                        <p style="color: var(--sub-text); margin-top: 15px; font-size: 1.1rem;">단순한 번호 생성을 넘어, 확률의 원리를 이해하면 로또가 더 즐거워집니다.</p>
                     </div>
                     
-                    <div class="grid-3col" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
-                        <div class="info-card" style="background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                            <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 20px;"></i>
-                            <h3>스마트한 통계 필터링</h3>
-                            <p style="color: var(--sub-text); line-height: 1.6; font-size: 0.95rem;">단순히 공을 뽑는 것이 아닙니다. 사용자가 지정한 고정수와 제외수를 완벽하게 반영하며, 수학적 균형을 고려한 조합을 생성합니다.</p>
-                        </div>
-                        <div class="info-card" style="background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                            <i class="fas fa-mobile-alt" style="font-size: 2rem; color: #10b981; margin-bottom: 20px;"></i>
-                            <h3>최적화된 모바일 경험</h3>
-                            <p style="color: var(--sub-text); line-height: 1.6; font-size: 0.95rem;">언제 어디서나 스마트폰만 있으면 빠르게 번호를 확인하고 이미지로 저장하여 친구들과 공유할 수 있습니다.</p>
-                        </div>
-                        <div class="info-card" style="background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                            <i class="fas fa-user-shield" style="font-size: 2rem; color: #f59e0b; margin-bottom: 20px;"></i>
-                            <h3>강력한 개인정보 보호</h3>
-                            <p style="color: var(--sub-text); line-height: 1.6; font-size: 0.95rem;">회원가입이 필요 없습니다. 모든 생성 기록은 브라우저 저장소(Local Storage)에만 기록되어 서버에 남지 않습니다.</p>
-                        </div>
+                    <div class="insight-content-grid" style="display: grid; gap: 60px; line-height: 1.8;">
+                        <article>
+                            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: var(--text-color); display: flex; align-items: center;">
+                                <i class="fas fa-microchip" style="margin-right: 15px; color: var(--primary-color);"></i>
+                                1. LottoMaster의 알고리즘은 무엇이 다른가요?
+                            </h3>
+                            <p style="color: var(--sub-text); margin-bottom: 15px;">
+                                많은 무료 번호 생성기들이 단순한 <code>Math.random()</code> 함수에 의존합니다. 하지만 LottoMaster는 보다 정교한 무작위성을 보장하기 위해 암호학적으로 안전한 난수 생성 방식과 통계적 필터링을 결합합니다. 
+                                우리는 사용자가 설정한 제외수와 포함수를 완벽하게 로직에 녹여내며, 역대 당첨 번호의 출현 빈도를 분석한 데이터를 바탕으로 '가장 균형 잡힌' 조합을 제안합니다.
+                            </p>
+                            <p style="color: var(--sub-text);">
+                                통계적으로 로또 공은 모두 동일한 확률을 갖지만, 인간이 선택하는 번호 조합에는 일정한 패턴이 존재합니다. 우리는 이러한 패턴 중 당첨 시 중복 수령자가 많아질 수 있는 '전형적인 패턴'을 피하면서도 수학적 독립 시행의 원칙을 지키는 최적의 조합을 생성합니다.
+                            </p>
+                        </article>
+
+                        <article>
+                            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: var(--text-color); display: flex; align-items: center;">
+                                <i class="fas fa-chart-pie" style="margin-right: 15px; color: #10b981;"></i>
+                                2. 당첨 확률을 높이는 전략적 접근 (Theoretical)
+                            </h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 20px;">
+                                <div style="background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color);">
+                                    <h4 style="margin-bottom: 10px; color: var(--primary-color);">홀짝 비율의 조화</h4>
+                                    <p style="font-size: 0.9rem; color: var(--sub-text);">역대 당첨 번호 중 80% 이상은 홀수와 짝수의 비율이 3:3, 2:4, 4:2로 구성되어 있습니다. 극단적인 홀수/짝수 몰림 현상을 피하는 것이 통계적으로 유리합니다.</p>
+                                </div>
+                                <div style="background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color);">
+                                    <h4 style="margin-bottom: 10px; color: #10b981;">연속 번호의 미학</h4>
+                                    <p style="font-size: 0.9rem; color: var(--sub-text);">의외로 1등 당첨 번호에는 2개 이상의 연속된 숫자가 포함되는 경우가 많습니다(약 45%). 너무 분산된 번호만 고집하기보다 자연스러운 흐름을 따르세요.</p>
+                                </div>
+                                <div style="background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color);">
+                                    <h4 style="margin-bottom: 10px; color: #f59e0b;">저고 비율 분석</h4>
+                                    <p style="font-size: 0.9rem; color: var(--sub-text);">번호 1~22를 '저번호', 23~45를 '고번호'로 분류했을 때, 이들이 적절히 섞여 나올 확률이 매우 높습니다. 균형 잡힌 배치가 핵심입니다.</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article style="background: var(--card-bg); padding: 40px; border-radius: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.05);">
+                            <h3 style="font-size: 1.5rem; margin-bottom: 25px; text-align: center;">자주 묻는 질문 (FAQ)</h3>
+                            <div style="display: grid; gap: 20px;">
+                                <details style="border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                                    <summary style="font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                                        Q. 생성된 번호로 당첨되면 수수료를 내야 하나요?
+                                        <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
+                                    </summary>
+                                    <p style="margin-top: 15px; color: var(--sub-text); font-size: 0.95rem;">
+                                        아니요, 절대 그렇지 않습니다. LottoMaster는 100% 무료 서비스이며, 당첨금에 대한 어떠한 권리도 주장하지 않습니다. 여러분의 행운은 오롯이 여러분의 것입니다.
+                                    </p>
+                                </details>
+                                <details style="border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                                    <summary style="font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                                        Q. 제외수와 고정수는 어떻게 설정하는 게 좋은가요?
+                                        <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
+                                    </summary>
+                                    <p style="margin-top: 15px; color: var(--sub-text); font-size: 0.95rem;">
+                                        직전 회차 당첨 번호를 제외수로 1~2개 설정하거나, 본인만의 의미 있는 숫자를 고정수로 1개 정도 지정하는 것을 추천합니다. 너무 많은 필터링은 오히려 무작위성의 장점을 해칠 수 있습니다.
+                                    </p>
+                                </details>
+                                <details>
+                                    <summary style="font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                                        Q. AI 동물상 테스트와 로또는 무슨 상관인가요?
+                                        <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
+                                    </summary>
+                                    <p style="margin-top: 15px; color: var(--sub-text); font-size: 0.95rem;">
+                                        LottoMaster는 '행운과 즐거움'을 테마로 하는 플랫폼입니다. 로또 번호 생성이 '희망'을 준다면, 동물상 테스트는 '즐거움'을 줍니다. 우리는 최신 IT 기술을 활용해 일상 속 작은 재미를 선사하는 것을 목표로 합니다.
+                                    </p>
+                                </details>
+                            </div>
+                        </article>
                     </div>
 
-                    <div style="margin-top: 50px; text-align: center;">
-                        <p style="color: var(--sub-text); margin-bottom: 20px;">더 자세한 확률 분석과 가이드가 궁금하신가요?</p>
-                        <a href="guide.html" class="action-btn" style="display: inline-block; padding: 12px 30px; border: 2px solid var(--primary-color); color: var(--primary-color); border-radius: 30px; text-decoration: none; font-weight: 600; transition: all 0.3s;">이용 가이드 보러가기</a>
+                    <div style="margin-top: 60px; text-align: center;">
+                        <p style="color: var(--sub-text); margin-bottom: 25px; font-style: italic;">"행운은 준비된 자에게 찾아옵니다. LottoMaster와 함께 당신의 확률을 설계하세요."</p>
+                        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                            <a href="guide.html" class="action-btn" style="padding: 12px 25px; background: var(--primary-color); color: white; border-radius: 30px; text-decoration: none; font-weight: 600;">상세 분석 가이드</a>
+                            <a href="about.html" class="action-btn" style="padding: 12px 25px; border: 1px solid var(--border-color); color: var(--text-color); border-radius: 30px; text-decoration: none; font-weight: 600;">개발팀 소개</a>
+                        </div>
                     </div>
                 </div>
             </section>
